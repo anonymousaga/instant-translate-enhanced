@@ -37,6 +37,9 @@ The successor to [`quick-translate`](https://github.com/nlink-jp/quick-translate
   language with the source picker.
 - **Detection restriction**: Settings can limit automatic detection to selected
   languages.
+- **High-fidelity translation**: Settings can prefer higher-quality translations
+  over the low-latency strategy. It is enabled by default and waits slightly
+  longer before auto-translating.
 - **Pin the input language**: a source picker in the panel ("Auto" + languages)
   skips detection entirely and always translates as the pinned language — for when
   you know what you're pasting. Resets to Auto on restart.

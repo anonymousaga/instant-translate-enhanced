@@ -10,6 +10,8 @@ enum SettingsKey {
     static let autoSwapEnabled = "autoSwapEnabled"
     /// Translate automatically a short time after the input stops changing (debounced).
     static let autoTranslate = "autoTranslate"
+    /// Prefer translation quality over latency when using the Translation framework.
+    static let highFidelityTranslation = "highFidelityTranslation"
     /// When the panel is opened by a global hotkey, seed the source field from the clipboard.
     static let clipboardAutoTranslate = "clipboardAutoTranslate"
     /// Automatically copy the translation to the clipboard when it completes.
@@ -32,6 +34,7 @@ enum SettingsKey {
             secondaryLanguage: SettingsStore.systemDefaultSecondary(),
             autoSwapEnabled: true,
             autoTranslate: true,
+            highFidelityTranslation: true,
             clipboardAutoTranslate: true,
             copyOnTranslate: false,
             hideOnDeactivate: true,
@@ -49,6 +52,9 @@ struct SettingsStore: Equatable {
     var autoSwapEnabled: Bool
     /// Defaulted so existing call sites (and tests) that don't set it still compile.
     var autoTranslate: Bool = true
+    /// Use the Translation framework's higher-quality strategy instead of its
+    /// lower-latency default.
+    var highFidelityTranslation: Bool = true
     var clipboardAutoTranslate: Bool
     var copyOnTranslate: Bool
     var hideOnDeactivate: Bool = true
@@ -68,6 +74,7 @@ struct SettingsStore: Equatable {
             secondaryLanguage: d.string(forKey: SettingsKey.secondaryLanguage) ?? systemDefaultSecondary(),
             autoSwapEnabled: d.bool(forKey: SettingsKey.autoSwapEnabled),
             autoTranslate: d.bool(forKey: SettingsKey.autoTranslate),
+            highFidelityTranslation: d.bool(forKey: SettingsKey.highFidelityTranslation),
             clipboardAutoTranslate: d.bool(forKey: SettingsKey.clipboardAutoTranslate),
             copyOnTranslate: d.bool(forKey: SettingsKey.copyOnTranslate),
             hideOnDeactivate: d.bool(forKey: SettingsKey.hideOnDeactivate),

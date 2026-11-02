@@ -16,6 +16,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.secondaryLanguage) private var secondaryLanguage = SettingsStore.systemDefaultSecondary()
     @AppStorage(SettingsKey.autoSwapEnabled) private var autoSwapEnabled = true
     @AppStorage(SettingsKey.autoTranslate) private var autoTranslate = true
+    @AppStorage(SettingsKey.highFidelityTranslation) private var highFidelityTranslation = true
     @AppStorage(SettingsKey.clipboardAutoTranslate) private var clipboardAutoTranslate = true
     @AppStorage(SettingsKey.copyOnTranslate) private var copyOnTranslate = false
     @AppStorage(SettingsKey.hideOnDeactivate) private var hideOnDeactivate = true
@@ -99,6 +100,11 @@ struct SettingsView: View {
                 GroupBox("Behaviour") {
                     VStack(alignment: .leading, spacing: 10) {
                         Toggle("Translate automatically as you type", isOn: $autoTranslate)
+                        Toggle("Use high-fidelity translation", isOn: $highFidelityTranslation)
+                        Text("Latency is increased, but higher-quality AI translation is used.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                         Toggle("Seed from clipboard when opened by hotkey", isOn: $clipboardAutoTranslate)
                         Toggle("Copy result automatically", isOn: $copyOnTranslate)
                         Toggle("Hide panel when clicking away", isOn: $hideOnDeactivate)

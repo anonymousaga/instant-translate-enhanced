@@ -17,6 +17,7 @@ struct PanelView: View {
     @EnvironmentObject private var controller: AppController
     @EnvironmentObject private var catalog: LanguageCatalog
     @AppStorage(SettingsKey.autoTranslate) private var autoTranslate = true
+    @AppStorage(SettingsKey.highFidelityTranslation) private var highFidelityTranslation = true
     /// ⌘+ / ⌘− preference; nil = system body size ().
     @AppStorage(SettingsKey.textSize) private var textSizePreference: Double?
     @State private var configuration: TranslationSession.Configuration?
@@ -26,7 +27,9 @@ struct PanelView: View {
     @State private var metrics = PanelMinimumSize.Metrics()
 
     /// Idle time after the last keystroke before an automatic translation fires.
-    private let autoTranslateDelay: Duration = .milliseconds(600)
+    private var autoTranslateDelay: Duration {
+        highFidelityTranslation ? .milliseconds(600) : .milliseconds(150)
+    }
 
     /// Bindings to the model's manual overrides (nil = Auto). `@EnvironmentObject`
     /// doesn't provide `$model.property`, so build them explicitly.
@@ -146,6 +149,9 @@ struct PanelView: View {
             // Same for pinning/unpinning the source — it can change the routed target
             // (auto-swap) and the translation itself.
             if isSourceEmpty { model.resolveTarget() } else { translate() }
+        }
+        .onChange(of: highFidelityTranslation) { _, _ in
+            if !isSourceEmpty { translate() }
         }
         .translationTask(configuration) { session in
             await run(session)
@@ -434,8 +440,22 @@ struct PanelView: View {
         model.phase = .translating
         let source = model.resolvedSource.map { Locale.Language(identifier: $0) }
         let target = Locale.Language(identifier: model.targetLanguage)
-        if let current = configuration, current.source == source, current.target == target {
-            configuration?.invalidate()    // same pair → just re-run the task
+        if #available(macOS 26.4, *) {
+            let strategy: TranslationSession.Strategy =
+                highFidelityTranslation ? .highFidelity : .lowLatency
+            if let current = configuration,
+               current.source == source,
+               current.target == target,
+               current.preferredStrategy == strategy {
+                configuration?.invalidate()    // same pair → just re-run the task
+            } else {
+                configuration = TranslationSession.Configuration(
+                    source: source,
+                    target: target,
+                    preferredStrategy: strategy)
+            }
+        } else if let current = configuration, current.source == source, current.target == target {
+            configuration?.invalidate()
         } else {
             configuration = TranslationSession.Configuration(source: source, target: target)
         }

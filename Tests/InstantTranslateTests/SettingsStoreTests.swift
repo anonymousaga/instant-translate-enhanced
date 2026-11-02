@@ -28,10 +28,19 @@ final class SettingsStoreTests: XCTestCase {
         let s = SettingsStore.current(d)
         XCTAssertTrue(s.autoSwapEnabled)
         XCTAssertTrue(s.autoTranslate)
+        XCTAssertTrue(s.highFidelityTranslation)
         XCTAssertTrue(s.clipboardAutoTranslate)
         XCTAssertFalse(s.copyOnTranslate)
         XCTAssertTrue(s.hideOnDeactivate)
         XCTAssertFalse(s.secondaryLanguage.isEmpty)
+    }
+
+    func testCurrentReadsHighFidelityPreference() {
+        let d = ephemeral()
+        SettingsKey.registerDefaults(d)
+        d.set(true, forKey: SettingsKey.highFidelityTranslation)
+
+        XCTAssertTrue(SettingsStore.current(d).highFidelityTranslation)
     }
 
     func testPolicyBuiltFromSettings() {
