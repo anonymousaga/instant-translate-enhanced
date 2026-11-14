@@ -1,4 +1,4 @@
-# Instant Translate Enhanced
+# [<img src="assets/AppIcon-1024.png" width="40" align="top"/>](assets/AppIcon-1024.png) Instant Translate Enhanced
 
 > **This is an unofficial fork of [nlink-jp/instant-translate](https://github.com/nlink-jp/instant-translate).**
 > It adds configurable language-detection restrictions, a **Clear** button, and
